@@ -1,0 +1,56 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+void Merge(int A[],int p,int q,int r){
+	int x,y,*L,*R;
+	x=q-p+1;
+	y=r-q;
+	L=(int*)malloc(sizeof(int)*x);
+	R=(int*)malloc(sizeof(int)*y);
+	for(int i=0;i<x;i++){
+		L[i]=A[p+i];
+	}
+	for(int j=0;j<y;j++){
+		R[j]=A[q+j+1];
+	}
+	i=j=0;
+	int k=p;
+	while(i<x && j<y){
+		if(R[j]>=L[i])
+			A[k++]=L[i++];
+		else{
+			A[k++]=R[j++];
+		}
+	}
+	while(i<x){
+		A[k++]=L[i++];
+	}
+	while(j<y){
+		A[k++]=R[j++];
+	}
+	free(L);
+	free(R);
+}
+void MergeSort(int A[],int p,int r){
+	if(p<r){
+		int q=(p+r)/2;
+		MergeSort(A,p,q);
+		MergeSort(A,q+1,r);
+		Merge(A,p,q,r);
+	}
+}
+
+int main(){
+	int r;
+	printf("请输入待排序数组长度：\n");
+	scanf("%d",&r);
+	int A[r+1];
+	for(int i=0;i<r+1;i++){
+		A[i]=rand() % 101;
+	}
+	MergeSort(A,1,r);
+	for(int i=1;i<r+1;i++){
+		printf("%d ",A[i]);
+	}
+	return 0;
+} 

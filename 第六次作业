@@ -1,0 +1,83 @@
+#include<iostream>
+using namespace std;
+#define MAX 128 
+
+void quickSort(int a[], int left, int right) {
+	int pivot, i, j;
+	int temp;
+	if (left < right)
+	{
+		i = left; j = right + 1;
+		pivot = a[left];
+		do {
+			do {
+				i++;
+			} while (a[i] < pivot);
+			do {
+				j--;
+			} while (a[j] > pivot);
+			if (i < j) {
+				int temp;
+				temp = a[i];
+				a[i] = a[j];
+				a[j] = temp;
+			}
+		} while (i < j);
+		int temp;
+		temp = a[left];
+		a[left] = a[j];
+		a[j] = temp;
+		quickSort(a, left, j - 1);
+		quickSort(a, j + 1, right);
+	}
+}
+
+int select(int a[],int start,int end,int k){
+	int m = 0;//记录有几组，每五个为一组；
+	int s[MAX];//用于保存每组的中位数；
+	int i = start;
+	while(i <= end){//对数组进行分组 
+		int iend = i + 4;
+		if(iend >= end){
+			iend = end;
+		}
+		quickSort(a,i,iend);//对每组进行快速排序 
+		s[m] = a[(i + iend)/2];//将每组的中位数记录下来 
+		m++;
+		i = iend + 1;
+	} 
+	quickSort(s,0,m-1);//对中位数进行排序
+	int mid = s[m/2];
+	int al[MAX],ar[MAX];
+	int count_al=0,count_ar=0;
+	for(int j=start;j<=end;j++){
+		if(a[j] < mid){
+			al[count_al++] = a[j];
+		}
+		else if(a[j] > mid){
+			ar[count_ar++] = a[j];
+		}
+	} 
+	if(k == count_al + 1){
+		return mid;
+	}
+	else if(k <= count_al){
+		return select(al,0,count_al - 1,k);
+	}
+	else{
+		return select(ar,0,count_ar - 1,k-count_al -1);
+	}
+}
+
+int main(){
+	int a[MAX];
+	int n,k;
+	cout<<"请输入数组元素个数："<<endl;
+	cin>>n;
+	for(int i = 0;i < n;i++){
+		cin>>a[i];
+	}
+	cin>>k;
+	cout<<select(a,0,n-1,k);
+	return 0;
+}

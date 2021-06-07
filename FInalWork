@@ -1,0 +1,62 @@
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+int minOfThree(int a, int b, int c)  //返回三个数中的最小值
+{
+    int minNum = a;
+    if(minNum > b )
+    {
+        minNum = b;
+    }
+    if(minNum > c )
+    {
+        minNum = c;
+    }
+    return minNum;
+}
+ 
+int levenSTDistance(string x, string y)  //计算字符串x和字符串y的levenshtein距离
+{
+    int lenx = x.length();
+    int leny = y.length();
+    int levenST[lenx+1][leny+1];  //申请一个二维数组存放编辑距离
+    int eq = 0;                   //判断第x[i],y[j]两个字符是否一样，一样的话，eq=0，不一样的话，eq为1 
+    int i,j;
+ 
+    //初始化二维数组，也就是将最简单情形的levenshtein距离写入
+    for(i=0; i <= lenx; i++)
+    {
+        levenST[i][0] = i;
+    }
+    for(j=0; j <= leny; j++)
+    {
+        levenST[0][j] = j;
+    }
+ 
+    //将串x和串y中的字母两两进行比较，得出相应字串的编辑距离
+    for(i=1; i <= lenx; i++ )
+    {
+        for(j=1; j <= leny; j++)
+        {
+            if(x[i-1] == y[j-1])
+            {
+                eq = 0;
+            }else{
+                eq = 1;
+            }
+            levenST[i][j] = minOfThree(levenST[i-1][j] + 1, levenST[i][j-1] + 1, levenST[i-1][j-1] + eq);
+        }
+    }
+    return levenST[lenx][leny];
+}
+int main()
+{
+    string a,b;
+    int levenDistance;
+    cin >> a;
+    cin >> b;
+    levenDistance = levenSTDistance(a,b);
+    cout << "Levenshtein Distance:" << levenDistance << endl;
+    return 0;
+}
